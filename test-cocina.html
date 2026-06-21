@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de Conocimientos Básicos de Cocina</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Header */
+  .header { text-align: center; padding: 2rem 1rem 1.5rem; }
+  .header-icon { font-size: 52px; display: block; margin-bottom: 12px; }
+  .header h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; line-height: 1.3; }
+  .header p { font-size: 14px; color: #666; margin-top: 6px; }
+  .badges { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .badge { font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 500; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-green { background: #d1fae5; color: #065f46; }
+
+  /* Cards */
+  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+
+  /* Form elements */
+  label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 500; }
+  input[type=text], input[type=password] { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; font-family: inherit; outline: none; transition: border 0.15s; }
+  input[type=text]:focus, input[type=password]:focus { border-color: #e97c2f; box-shadow: 0 0 0 3px rgba(233,124,47,0.12); }
+
+  /* Buttons */
+  .btn { display: block; width: 100%; padding: 12px 20px; border-radius: 10px; border: 1px solid #d1d5db; background: #fff; color: #1a1a1a; font-size: 15px; font-family: inherit; cursor: pointer; transition: background 0.15s, border 0.15s; font-weight: 500; text-align: center; }
+  .btn:hover { background: #f9f9f9; }
+  .btn-primary { background: #e97c2f; border-color: #e97c2f; color: #fff; }
+  .btn-primary:hover { background: #d4691e; border-color: #d4681e; }
+  .btn-sm { display: inline-block; width: auto; padding: 7px 14px; font-size: 13px; }
+  .btn-ghost { border-color: transparent; background: transparent; color: #555; }
+  .btn-ghost:hover { background: #f5f5f0; }
+  .btn-danger { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+  .btn-danger:hover { background: #fee2e2; }
+
+  /* Progress */
+  .progress-bar { background: #e5e5e5; border-radius: 99px; height: 5px; margin-bottom: 1.25rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: #e97c2f; border-radius: 99px; transition: width 0.35s ease; }
+  .q-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; color: #777; }
+
+  /* Options */
+  .option { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1.5px solid #e5e5e5; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.12s; }
+  .option:hover { border-color: #e97c2f; background: #fff8f4; }
+  .option.selected { border-color: #e97c2f; background: #fff4ed; }
+  .option input[type=radio] { accent-color: #e97c2f; width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+  .option-label { font-size: 14px; cursor: pointer; color: #1a1a1a; line-height: 1.45; }
+  .q-text { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 14px; line-height: 1.5; }
+  .pts-badge { background: #fef3c7; color: #92400e; font-size: 12px; padding: 3px 10px; border-radius: 99px; font-weight: 600; }
+
+  .nav-row { display: flex; justify-content: space-between; gap: 10px; margin-top: 1rem; }
+  .nav-row .btn { width: auto; padding: 10px 20px; }
+
+  /* Results */
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .metric { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1rem; text-align: center; }
+  .metric-val { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+  .metric-lbl { font-size: 12px; color: #777; margin-top: 3px; }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; gap: 8px; }
+  .result-row:last-child { border-bottom: none; }
+
+  /* Admin */
+  .tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+  .tab { padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e5e5; background: #fff; font-size: 13px; cursor: pointer; color: #555; font-family: inherit; font-weight: 500; }
+  .tab.active { background: #e97c2f; border-color: #e97c2f; color: #fff; }
+
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .admin-table th { text-align: left; padding: 10px 12px; font-weight: 600; color: #555; border-bottom: 1px solid #e5e5e5; background: #fafafa; }
+  .admin-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: #1a1a1a; }
+  .admin-table tr:last-child td { border-bottom: none; }
+
+  .q-edit-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .q-edit-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .q-edit-text { font-size: 13px; color: #1a1a1a; line-height: 1.45; flex: 1; }
+  .icon-btn { background: transparent; border: none; cursor: pointer; font-size: 18px; padding: 2px 5px; border-radius: 6px; }
+  .icon-btn:hover { background: #f5f5f0; }
+  .icon-btn-del:hover { background: #fef2f2; }
+
+  .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 1rem; font-weight: 500; }
+  .alert-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+
+  .sep { height: 1px; background: #e5e5e5; margin: 1.25rem 0; }
+  .section-label { font-size: 11px; font-weight: 700; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .back-btn { display: flex; align-items: center; gap: 6px; background: transparent; border: none; font-size: 14px; color: #555; cursor: pointer; font-family: inherit; padding: 0; margin-bottom: 1.25rem; }
+  .back-btn:hover { color: #1a1a1a; }
+
+  .score-circle { width: 110px; height: 110px; border-radius: 50%; border: 6px solid #e97c2f; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 1.5rem; background: #fff; }
+  .score-num { font-size: 32px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+  .score-den { font-size: 13px; color: #aaa; }
+
+  .input-grp { margin-bottom: 14px; }
+
+  @media (max-width: 480px) {
+    .metric-val { font-size: 22px; }
+    .admin-table th, .admin-table td { padding: 8px 8px; font-size: 12px; }
+    .score-circle { width: 90px; height: 90px; }
+    .score-num { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="header">
+      <span class="header-icon">👨‍🍳</span>
+      <h1>Test de Conocimientos Básicos de Cocina</h1>
+      <p>Evaluación de competencias culinarias</p>
+      <div class="badges">
+        <span class="badge badge-blue">15 preguntas</span>
+        <span class="badge badge-amber">100 puntos</span>
+        <span class="badge badge-green">~10 minutos</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="input-grp">
+        <label for="eval-name">Tu nombre completo</label>
+        <input type="text" id="eval-name" placeholder="Ej: María González" onkeydown="if(event.key==='Enter')startTest()">
+      </div>
+      <button class="btn btn-primary" onclick="startTest()">Comenzar evaluación →</button>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <button class="btn btn-ghost btn-sm" onclick="showAdminLogin()" style="display:inline-block">🔐 Acceso administrador</button>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="screen-test" class="screen">
+    <div class="q-meta">
+      <span id="q-counter">Pregunta 1 de 15</span>
+      <span class="pts-badge" id="q-pts-top"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:6.67%"></div></div>
+    <div class="card">
+      <p class="q-text" id="q-text"></p>
+      <div id="q-options"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost btn-sm" id="btn-prev" onclick="prevQ()" style="visibility:hidden">← Anterior</button>
+      <button class="btn btn-primary btn-sm" id="btn-next" onclick="nextQ()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen">
+    <div class="header">
+      <span class="header-icon" id="res-icon">🏆</span>
+      <h1 id="res-title">¡Excelente trabajo!</h1>
+      <p id="res-name-lbl" style="font-weight:600;color:#1a1a1a;margin-top:6px"></p>
+    </div>
+    <div class="score-circle">
+      <span class="score-num" id="res-score">0</span>
+      <span class="score-den">de 100</span>
+    </div>
+    <div class="metric-grid">
+      <div class="metric"><div class="metric-val" id="res-pct">0%</div><div class="metric-lbl">Porcentaje</div></div>
+      <div class="metric"><div class="metric-val" id="res-correct">0/15</div><div class="metric-lbl">Correctas</div></div>
+      <div class="metric"><div class="metric-val" id="res-status">—</div><div class="metric-lbl">Estado</div></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Detalle de respuestas</div>
+      <div id="res-detail"></div>
+    </div>
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-top:4px">← Volver al inicio</button>
+  </div>
+
+  <!-- ADMIN LOGIN -->
+  <div id="screen-admin-login" class="screen">
+    <div class="header">
+      <span class="header-icon">🔐</span>
+      <h1>Acceso administrador</h1>
+      <p>Ingresa la contraseña para continuar</p>
+    </div>
+    <div class="card">
+      <div class="input-grp">
+        <label for="admin-pw">Contraseña</label>
+        <input type="password" id="admin-pw" placeholder="••••••" onkeydown="if(event.key==='Enter')checkAdmin()">
+      </div>
+      <div id="pw-error" class="alert alert-danger" style="display:none">Contraseña incorrecta. Intenta de nuevo.</div>
+      <button class="btn btn-primary" onclick="checkAdmin()">Entrar</button>
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="btn btn-ghost btn-sm" onclick="goHome()" style="display:inline-block">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="screen-admin" class="screen">
+    <button class="back-btn" onclick="goHome()">← Salir del panel</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <h2 style="font-size:18px;font-weight:600">Panel de administrador</h2>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tab-btn-notas" onclick="switchTab('notas',this)">📊 Notas del equipo</button>
+      <button class="tab" id="tab-btn-preguntas" onclick="switchTab('preguntas',this)">📝 Preguntas</button>
+    </div>
+
+    <div id="tab-notas">
+      <div id="notas-stats"></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="notas-table"></div>
+      </div>
+      <button class="btn btn-danger" style="margin-top:10px" onclick="clearResults()">🗑️ Limpiar todas las notas</button>
+    </div>
+
+    <div id="tab-preguntas" style="display:none">
+      <p style="font-size:13px;color:#777;margin-bottom:1rem">Agrega, edita o elimina preguntas del test.</p>
+      <div id="q-list"></div>
+      <button class="btn btn-primary" style="margin-top:6px" onclick="addQuestion()">+ Agregar pregunta</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ADMIN_PW = "cocina2024";
+
+let questions = [
+  {text:"¿A qué temperatura se considera que el aceite está listo para freír?",opts:["100°C","150°C","180°C","220°C"],correct:2,pts:7},
+  {text:"¿Cuál es la técnica de corte correcta para el brunoise?",opts:["Corte en juliana gruesa","Corte en cubos muy pequeños (~3mm)","Corte en láminas delgadas","Corte en rodajas"],correct:1,pts:7},
+  {text:"¿Qué significa 'blanquear' un alimento?",opts:["Cocinarlo completamente en agua hirviendo","Sumergirlo brevemente en agua hirviendo y enfriarlo rápido","Saltearlo en mantequilla hasta que quede blanco","Marinarlo en limón"],correct:1,pts:7},
+  {text:"¿Cuál temperatura interna indica que el pollo está bien cocido?",opts:["60°C","70°C","74°C","85°C"],correct:2,pts:7},
+  {text:"¿Qué es el 'mise en place'?",opts:["Una técnica de corte francesa","La preparación y organización previa de ingredientes y utensilios","Un tipo de salsa base","El orden de limpieza de la cocina"],correct:1,pts:6},
+  {text:"¿Cuál es la diferencia entre hervir y escalfar?",opts:["No hay diferencia, son lo mismo","Hervir usa 100°C y escalfar entre 70-82°C con líquido sin burbujear","Escalfar es solo para verduras","Hervir requiere menos agua"],correct:1,pts:7},
+  {text:"¿Qué tipo de cuchillo se usa para deshuesar carnes?",opts:["Cuchillo de chef","Cuchillo para pan","Cuchillo deshuesador","Cuchillo mondador"],correct:2,pts:6},
+  {text:"¿Cuál es la función principal de la sal en la cocina?",opts:["Solo dar sabor","Potenciar sabores, conservar y controlar textura","Solo conservar alimentos","Endulzar preparaciones"],correct:1,pts:7},
+  {text:"¿Qué es la reacción de Maillard?",opts:["La fermentación del pan","La caramelización del azúcar","El dorado de proteínas y azúcares con calor que genera sabores complejos","La oxidación de frutas al cortarlas"],correct:2,pts:7},
+  {text:"¿Cuál es el método correcto para descongelar carne de forma segura?",opts:["A temperatura ambiente en la mesa","Bajo agua caliente corriente","En el refrigerador durante varias horas","En el microondas siempre"],correct:2,pts:6},
+  {text:"¿Qué es una emulsión en cocina?",opts:["Una mezcla estable de dos líquidos que normalmente no se mezclan","El batido de claras a punto de nieve","Una reducción de caldo","Una técnica de ahumado"],correct:0,pts:7},
+  {text:"¿Cuánto tiempo deben lavarse las manos antes de manipular alimentos?",opts:["5 segundos","10 segundos","20 segundos","1 minuto"],correct:2,pts:6},
+  {text:"¿Cuál es la 'zona de peligro' de temperatura para los alimentos?",opts:["0°C a 5°C","5°C a 60°C","60°C a 100°C","Por encima de 100°C"],correct:1,pts:7},
+  {text:"¿Qué técnica consiste en cocinar alimentos en sus propios jugos a fuego lento y tapados?",opts:["Gratinar","Estofar","Escabechar","Ahumar"],correct:1,pts:6},
+  {text:"¿Qué hace el bicarbonato de sodio en la repostería?",opts:["Da color dorado a los productos","Aporta sabor dulce","Actúa como agente leudante generando CO₂","Espesa las mezclas"],correct:2,pts:7}
+];
+
+let results = [];
+let currentQ = 0;
+let answers = [];
+let evalName = '';
+
+try { results = JSON.parse(localStorage.getItem('cocina_results') || '[]'); } catch(e){ results=[]; }
+
+function saveResults() { try { localStorage.setItem('cocina_results', JSON.stringify(results)); } catch(e){} }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goHome() { showScreen('screen-home'); }
+
+function startTest() {
+  evalName = document.getElementById('eval-name').value.trim();
+  if (!evalName) { alert('Por favor ingresa tu nombre completo.'); return; }
+  answers = new Array(questions.length).fill(null);
+  currentQ = 0;
+  renderQ();
+  showScreen('screen-test');
+}
+
+function renderQ() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  document.getElementById('q-counter').textContent = `Pregunta ${currentQ+1} de ${total}`;
+  document.getElementById('q-pts-top').textContent = `${q.pts} pts`;
+  document.getElementById('prog').style.width = `${((currentQ+1)/total)*100}%`;
+  document.getElementById('q-text').textContent = q.text;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentQ] === i ? ' selected' : '');
+    div.onclick = () => selectOpt(i);
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'q' + currentQ;
+    radio.checked = answers[currentQ] === i;
+    radio.onclick = (e) => { e.stopPropagation(); selectOpt(i); };
+    const lbl = document.createElement('span');
+    lbl.className = 'option-label';
+    lbl.textContent = o;
+    div.appendChild(radio);
+    div.appendChild(lbl);
+    opts.appendChild(div);
+  });
+  document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+  document.getElementById('btn-next').textContent = currentQ === total-1 ? 'Finalizar ✓' : 'Siguiente →';
+}
+
+function selectOpt(i) { answers[currentQ] = i; renderQ(); }
+
+function nextQ() {
+  if (answers[currentQ] === null) { alert('Por favor selecciona una respuesta antes de continuar.'); return; }
+  if (currentQ < questions.length - 1) { currentQ++; renderQ(); }
+  else finishTest();
+}
+
+function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
+
+function finishTest() {
+  let score = 0, correct = 0;
+  questions.forEach((q, i) => { if (answers[i] === q.correct) { score += q.pts; correct++; } });
+  const pct = Math.round((score / 100) * 100);
+  const status = pct >= 80 ? 'Aprobado' : pct >= 60 ? 'Regular' : 'Reprobado';
+  results.push({ name: evalName, score, pct, correct, total: questions.length, status, date: new Date().toLocaleDateString('es-GT') });
+  saveResults();
+
+  document.getElementById('res-name-lbl').textContent = evalName;
+  document.getElementById('res-score').textContent = score;
+  document.getElementById('res-pct').textContent = pct + '%';
+  document.getElementById('res-correct').textContent = correct + '/' + questions.length;
+  document.getElementById('res-status').textContent = status;
+
+  if (pct >= 80) {
+    document.getElementById('res-icon').textContent = '🏆';
+    document.getElementById('res-title').textContent = '¡Excelente trabajo!';
+  } else if (pct >= 60) {
+    document.getElementById('res-icon').textContent = '👍';
+    document.getElementById('res-title').textContent = '¡Buen esfuerzo!';
+  } else {
+    document.getElementById('res-icon').textContent = '📚';
+    document.getElementById('res-title').textContent = 'Necesitas repasar más';
+  }
+
+  const detail = document.getElementById('res-detail');
+  detail.innerHTML = '';
+  questions.forEach((q, i) => {
+    const ok = answers[i] === q.correct;
+    const row = document.createElement('div');
+    row.className = 'result-row';
+    row.innerHTML = `<span style="flex:1;color:#1a1a1a">${i+1}. ${q.text.length > 70 ? q.text.substring(0,70)+'…' : q.text}</span>
+      <span style="font-size:16px;flex-shrink:0">${ok ? '✅' : '❌'}</span>`;
+    detail.appendChild(row);
+  });
+
+  showScreen('screen-result');
+}
+
+function showAdminLogin() { showScreen('screen-admin-login'); document.getElementById('admin-pw').value = ''; document.getElementById('pw-error').style.display = 'none'; }
+
+function checkAdmin() {
+  if (document.getElementById('admin-pw').value === ADMIN_PW) {
+    document.getElementById('pw-error').style.display = 'none';
+    switchTab('notas', document.getElementById('tab-btn-notas'));
+    renderNotas();
+    showScreen('screen-admin');
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+  }
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-notas').style.display = name === 'notas' ? 'block' : 'none';
+  document.getElementById('tab-preguntas').style.display = name === 'preguntas' ? 'block' : 'none';
+  if (name === 'notas') renderNotas();
+  else renderQList();
+}
+
+function renderNotas() {
+  const stats = document.getElementById('notas-stats');
+  const tbl = document.getElementById('notas-table');
+  if (!results.length) {
+    stats.innerHTML = '';
+    tbl.innerHTML = '<div style="padding:2rem;text-align:center;font-size:14px;color:#aaa">Aún no hay evaluaciones registradas.</div>';
+    return;
+  }
+  const avg = Math.round(results.reduce((a, r) => a + r.score, 0) / results.length);
+  const max = Math.max(...results.map(r => r.score));
+  const aprobados = results.filter(r => r.pct >= 60).length;
+  stats.innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem">
+    <div class="metric"><div class="metric-val">${results.length}</div><div class="metric-lbl">Evaluados</div></div>
+    <div class="metric"><div class="metric-val">${avg}/100</div><div class="metric-lbl">Promedio</div></div>
+    <div class="metric"><div class="metric-val">${aprobados}/${results.length}</div><div class="metric-lbl">Aprobados</div></div>
+  </div>`;
+  const rows = results.map((r, i) => {
+    const color = r.pct >= 80 ? '#065f46' : r.pct >= 60 ? '#92400e' : '#dc2626';
+    return `<tr>
+      <td>${i+1}</td>
+      <td style="font-weight:500">${r.name}</td>
+      <td style="font-weight:700;color:${color}">${r.score}/100</td>
+      <td>${r.pct}%</td>
+      <td>${r.correct}/${r.total}</td>
+      <td style="color:#888">${r.date||'—'}</td>
+    </tr>`;
+  }).join('');
+  tbl.innerHTML = `<table class="admin-table"><thead><tr><th>#</th><th>Nombre</th><th>Nota</th><th>%</th><th>Correctas</th><th>Fecha</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function clearResults() {
+  if (confirm('¿Seguro que deseas eliminar TODAS las notas registradas? Esta acción no se puede deshacer.')) {
+    results = [];
+    saveResults();
+    renderNotas();
+  }
+}
+
+function renderQList() {
+  const el = document.getElementById('q-list');
+  el.innerHTML = '';
+  const totalPts = questions.reduce((a, q) => a + q.pts, 0);
+  el.innerHTML += `<div style="font-size:12px;color:#888;margin-bottom:10px">Total actual: <strong>${totalPts} puntos</strong> en ${questions.length} preguntas</div>`;
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q-edit-card';
+    d.innerHTML = `<div class="q-edit-header">
+      <span class="q-edit-text"><strong>${i+1}.</strong> ${q.text}</span>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="icon-btn" onclick="editQ(${i})" title="Editar">✏️</button>
+        <button class="icon-btn icon-btn-del" onclick="deleteQ(${i})" title="Eliminar">🗑️</button>
+      </div>
+    </div>
+    <div style="margin-top:6px;font-size:12px;color:#888"><strong>${q.pts} pts</strong> · Correcta: ${q.opts[q.correct]}</div>`;
+    el.appendChild(d);
+  });
+}
+
+function deleteQ(i) {
+  if (confirm(`¿Eliminar la pregunta ${i+1}?\n"${questions[i].text.substring(0,60)}..."`)) {
+    questions.splice(i, 1);
+    renderQList();
+  }
+}
+
+function editQ(i) {
+  const q = questions[i];
+  const text = prompt('Texto de la pregunta:', q.text);
+  if (!text) return;
+  const a = prompt('Opción A:', q.opts[0]);
+  if (!a) return;
+  const b = prompt('Opción B:', q.opts[1]);
+  if (!b) return;
+  const c = prompt('Opción C:', q.opts[2]);
+  if (!c) return;
+  const d = prompt('Opción D:', q.opts[3]);
+  if (!d) return;
+  const correctRaw = prompt('¿Cuál es la respuesta correcta?\n0 = ' + a + '\n1 = ' + b + '\n2 = ' + c + '\n3 = ' + d + '\n\nIngresa el número (0, 1, 2 o 3):', q.correct);
+  const correct = parseInt(correctRaw);
+  if (isNaN(correct) || correct < 0 || correct > 3) { alert('Número inválido. Debe ser 0, 1, 2 o 3.'); return; }
+  const ptsRaw = prompt('Puntos para esta pregunta:', q.pts);
+  const pts = parseInt(ptsRaw);
+  if (isNaN(pts) || pts < 1) { alert('Ingresa un número de puntos válido.'); return; }
+  questions[i] = { text, opts: [a, b, c, d], correct, pts };
+  renderQList();
+}
+
+function addQuestion() {
+  const text = prompt('Texto de la nueva pregunta:');
+  if (!text) return;
+  const a = prompt('Opción A:');
+  if (!a) return;
+  const b = prompt('Opción B:');
+  if (!b) return;
+  const c = prompt('Opción C:');
+  if (!c) return;
+  const d = prompt('Opción D:');
+  if (!d) return;
+  const correctRaw = prompt('¿Cuál es la respuesta correcta?\n0 = ' + a + '\n1 = ' + b + '\n2 = ' + c + '\n3 = ' + d + '\n\nIngresa el número (0, 1, 2 o 3):');
+  const correct = parseInt(correctRaw);
+  if (isNaN(correct) || correct < 0 || correct > 3) { alert('Número inválido.'); return; }
+  const ptsRaw = prompt('Puntos para esta pregunta:');
+  const pts = parseInt(ptsRaw);
+  if (isNaN(pts) || pts < 1) { alert('Número de puntos inválido.'); return; }
+  questions.push({ text, opts: [a, b, c, d], correct, pts });
+  renderQList();
+}
+</script>
+</body>
+</html>
