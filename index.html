@@ -28,6 +28,8 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--p);box-shad
 .btn:hover{background:var(--pbg)}
 .btn-p{background:var(--p);border-color:var(--p);color:#fff;text-transform:uppercase;letter-spacing:0.04em;font-size:13px}
 .btn-p:hover{background:#4a1d65;border-color:#4a1d65}
+.btn-print{background:#1a1a1a;border-color:#1a1a1a;color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:0.04em}
+.btn-print:hover{background:#333;border-color:#333}
 .btn-sm{display:inline-block;width:auto;padding:8px 16px;font-size:13px}
 .btn-g{border-color:transparent;background:transparent;color:var(--gray)}
 .btn-g:hover{background:var(--pm);color:var(--p)}
@@ -79,10 +81,99 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--p);box-shad
 .spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--pm);border-top-color:var(--p);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .input-grp{margin-bottom:13px}
-@media(max-width:480px){.met-v{font-size:18px}.score-n{font-size:26px}.score-ring{width:90px;height:90px}.hdr h1{font-size:17px}.admin-tbl th,.admin-tbl td{padding:8px;font-size:12px}}
+.btn-row{display:flex;gap:8px;margin-top:8px}
+.btn-row .btn{flex:1}
+@media(max-width:480px){.met-v{font-size:18px}.score-n{font-size:26px}.score-ring{width:90px;height:90px}.hdr h1{font-size:17px}.admin-tbl th,.admin-tbl td{padding:8px;font-size:12px}.btn-row{flex-direction:column}}
+
+/* ===== ESTILOS DE IMPRESIÓN ===== */
+@media print {
+  body * { visibility: hidden !important; }
+  #constancia-print, #constancia-print * { visibility: visible !important; }
+  #constancia-print { 
+    position: fixed !important; 
+    top: 0 !important; left: 0 !important;
+    width: 100% !important; height: auto !important;
+    z-index: 9999 !important;
+    background: white !important;
+    padding: 0 !important;
+  }
+}
 </style>
-</head>
-<body>
+
+<!-- CONSTANCIA DE IMPRESIÓN (oculta en pantalla) -->
+<div id="constancia-print" style="display:none">
+  <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:30px;border:3px solid #682A8D;border-radius:8px">
+    <!-- Header -->
+    <div style="text-align:center;border-bottom:2px solid #682A8D;padding-bottom:20px;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:6px">🔔</div>
+      <div style="font-size:22px;font-weight:700;color:#682A8D;text-transform:uppercase;letter-spacing:2px">TACO BELL</div>
+      <div style="font-size:13px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:1px">Constancia de Evaluación — Conocimientos Básicos de Cocina</div>
+    </div>
+
+    <!-- Datos del evaluado -->
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px;gap:16px">
+      <div style="flex:1;background:#f5f0fa;border-radius:8px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:#A07EBA;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Nombre del evaluado</div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a" id="p-name"></div>
+      </div>
+      <div style="flex:1;background:#f5f0fa;border-radius:8px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:#A07EBA;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Fecha de evaluación</div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a" id="p-date"></div>
+      </div>
+    </div>
+
+    <!-- Resultado principal -->
+    <div style="text-align:center;background:#682A8D;border-radius:12px;padding:20px;margin-bottom:20px;color:#fff">
+      <div style="font-size:13px;text-transform:uppercase;letter-spacing:2px;opacity:0.8;margin-bottom:6px">Calificación Final</div>
+      <div style="font-size:52px;font-weight:800;line-height:1" id="p-score"></div>
+      <div style="font-size:16px;opacity:0.8">de 100 puntos</div>
+      <div style="margin-top:12px;display:inline-block;background:rgba(255,255,255,0.2);border-radius:99px;padding:6px 20px;font-size:14px;font-weight:700" id="p-status-badge"></div>
+    </div>
+
+    <!-- Métricas -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+      <div style="border:1.5px solid #ddd3ea;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#682A8D" id="p-pct"></div>
+        <div style="font-size:10px;color:#666;text-transform:uppercase;font-weight:600;margin-top:2px">Porcentaje</div>
+      </div>
+      <div style="border:1.5px solid #ddd3ea;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#682A8D" id="p-correct"></div>
+        <div style="font-size:10px;color:#666;text-transform:uppercase;font-weight:600;margin-top:2px">Correctas</div>
+      </div>
+      <div style="border:1.5px solid #ddd3ea;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#682A8D" id="p-status"></div>
+        <div style="font-size:10px;color:#666;text-transform:uppercase;font-weight:600;margin-top:2px">Estado</div>
+      </div>
+    </div>
+
+    <!-- Detalle de respuestas -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:#A07EBA;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Detalle de respuestas</div>
+      <div id="p-detail"></div>
+    </div>
+
+    <!-- Firmas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;padding-top:20px;border-top:1px solid #ddd3ea">
+      <div style="text-align:center">
+        <div style="border-top:1.5px solid #1a1a1a;padding-top:8px;margin-top:40px">
+          <div style="font-size:12px;font-weight:600;color:#1a1a1a">Firma del evaluado</div>
+          <div style="font-size:11px;color:#666;margin-top:2px" id="p-name-firma"></div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="border-top:1.5px solid #1a1a1a;padding-top:8px;margin-top:40px">
+          <div style="font-size:12px;font-weight:600;color:#1a1a1a">Firma del supervisor</div>
+          <div style="font-size:11px;color:#666;margin-top:2px">Taco Bell</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid #ddd3ea">
+      <div style="font-size:10px;color:#aaa">Documento generado automáticamente · Taco Bell · Evaluación de Personal</div>
+    </div>
+  </div>
+</div>
 
 <div class="topbar">
   <span>🔔 Taco Bell — Evaluación de Personal</span>
@@ -153,7 +244,10 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--p);box-shad
       <div class="slbl">Detalle de respuestas</div>
       <div id="res-detail"></div>
     </div>
-    <button class="btn btn-g" onclick="goHome()" style="margin-top:4px">← Volver al inicio</button>
+    <div class="btn-row">
+      <button class="btn btn-print" onclick="printConstancia()">🖨️ Imprimir constancia</button>
+      <button class="btn btn-g" onclick="goHome()">← Volver al inicio</button>
+    </div>
   </div>
 
   <!-- ADMIN LOGIN -->
@@ -238,10 +332,10 @@ const DEFAULT_QUESTIONS = [
 ];
 
 let questions = [];
-let results = [];
 let currentQ = 0;
 let answers = [];
 let evalName = '';
+let lastResult = null;
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -252,7 +346,6 @@ window.showScreen = showScreen;
 function goHome() { showScreen('s-home'); }
 window.goHome = goHome;
 
-// ✅ SIEMPRE carga preguntas desde Firebase — nunca del código
 async function loadQuestions() {
   const msg = document.getElementById('home-msg');
   const form = document.getElementById('home-form');
@@ -262,15 +355,10 @@ async function loadQuestions() {
     msg.style.display = 'block';
     const snap = await getDocs(query(collection(db, 'questions'), orderBy('order')));
     if (snap.empty) {
-      // Primera vez: poblar Firebase con preguntas por defecto
       msg.textContent = '⚙️ Configurando por primera vez...';
       const batch = writeBatch(db);
-      DEFAULT_QUESTIONS.forEach(q => {
-        const ref = doc(collection(db, 'questions'));
-        batch.set(ref, q);
-      });
+      DEFAULT_QUESTIONS.forEach(q => { const ref = doc(collection(db, 'questions')); batch.set(ref, q); });
       await batch.commit();
-      // Recargar
       const snap2 = await getDocs(query(collection(db, 'questions'), orderBy('order')));
       questions = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
     } else {
@@ -279,15 +367,11 @@ async function loadQuestions() {
     questions.sort((a, b) => (a.order || 0) - (b.order || 0));
     msg.style.display = 'none';
     form.style.display = 'block';
-    badges.innerHTML = `
-      <span class="bdg bdg-p">🔔 ${questions.length} preguntas</span>
-      <span class="bdg bdg-l">⭐ 100 puntos</span>
-      <span class="bdg bdg-p">⏱ ~10 minutos</span>`;
+    badges.innerHTML = `<span class="bdg bdg-p">🔔 ${questions.length} preguntas</span><span class="bdg bdg-l">⭐ 100 puntos</span><span class="bdg bdg-p">⏱ ~10 minutos</span>`;
   } catch (e) {
     msg.className = 'alrt alrt-d';
     msg.textContent = '❌ Error al conectar con Firebase. Verifica tu conexión e intenta recargar.';
     msg.style.display = 'block';
-    console.error(e);
   }
 }
 
@@ -296,32 +380,25 @@ async function startTest() {
   if (!evalName) { alert('Por favor ingresa tu nombre completo.'); return; }
   if (!questions.length) { alert('Las preguntas aún están cargando. Espera un momento.'); return; }
   answers = new Array(questions.length).fill(null);
-  currentQ = 0;
-  renderQ();
-  showScreen('s-test');
+  currentQ = 0; renderQ(); showScreen('s-test');
 }
 window.startTest = startTest;
 
 function renderQ() {
-  const q = questions[currentQ];
-  const total = questions.length;
+  const q = questions[currentQ], total = questions.length;
   document.getElementById('q-counter').textContent = `Pregunta ${currentQ + 1} de ${total}`;
   document.getElementById('q-pts').textContent = `${q.pts} pts`;
   document.getElementById('prog').style.width = `${((currentQ + 1) / total) * 100}%`;
   document.getElementById('q-text').textContent = q.text;
-  const opts = document.getElementById('q-opts');
-  opts.innerHTML = '';
+  const opts = document.getElementById('q-opts'); opts.innerHTML = '';
   q.opts.forEach((o, i) => {
     const div = document.createElement('div');
     div.className = 'opt' + (answers[currentQ] === i ? ' sel' : '');
     div.onclick = () => selOpt(i);
-    const r = document.createElement('input');
-    r.type = 'radio'; r.name = 'q' + currentQ; r.checked = answers[currentQ] === i;
+    const r = document.createElement('input'); r.type = 'radio'; r.name = 'q' + currentQ; r.checked = answers[currentQ] === i;
     r.onclick = e => { e.stopPropagation(); selOpt(i); };
-    const l = document.createElement('span');
-    l.className = 'opt-lbl'; l.textContent = o;
-    div.appendChild(r); div.appendChild(l);
-    opts.appendChild(div);
+    const l = document.createElement('span'); l.className = 'opt-lbl'; l.textContent = o;
+    div.appendChild(r); div.appendChild(l); opts.appendChild(div);
   });
   document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
   document.getElementById('btn-next').textContent = currentQ === total - 1 ? 'Finalizar ✓' : 'Siguiente →';
@@ -329,14 +406,11 @@ function renderQ() {
 
 function selOpt(i) { answers[currentQ] = i; renderQ(); }
 window.selOpt = selOpt;
-
 function nextQ() {
   if (answers[currentQ] === null) { alert('Por favor selecciona una respuesta.'); return; }
-  if (currentQ < questions.length - 1) { currentQ++; renderQ(); }
-  else finishTest();
+  if (currentQ < questions.length - 1) { currentQ++; renderQ(); } else finishTest();
 }
 window.nextQ = nextQ;
-
 function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
 window.prevQ = prevQ;
 
@@ -345,14 +419,13 @@ async function finishTest() {
   questions.forEach((q, i) => { if (answers[i] === q.correct) { score += q.pts; correct++; } });
   const pct = Math.round((score / 100) * 100);
   const status = pct >= 80 ? 'Aprobado' : pct >= 60 ? 'Regular' : 'Reprobado';
+  const date = new Date().toLocaleDateString('es-GT');
+
+  lastResult = { name: evalName, score, pct, correct, total: questions.length, status, date, answers: [...answers] };
+
   try {
-    await addDoc(collection(db, 'results'), {
-      name: evalName, score, pct, correct,
-      total: questions.length, status,
-      date: new Date().toLocaleDateString('es-GT'),
-      timestamp: Date.now()
-    });
-  } catch (e) { console.error('Error guardando resultado:', e); }
+    await addDoc(collection(db, 'results'), { name: evalName, score, pct, correct, total: questions.length, status, date, timestamp: Date.now() });
+  } catch (e) { console.error(e); }
 
   document.getElementById('res-name').textContent = evalName;
   document.getElementById('res-score').textContent = score;
@@ -364,104 +437,88 @@ async function finishTest() {
   else if (pct >= 60) { document.getElementById('res-icon').textContent = '👍'; document.getElementById('res-title').textContent = '¡Buen esfuerzo!'; }
   else { document.getElementById('res-icon').textContent = '📚'; document.getElementById('res-title').textContent = 'Necesitas repasar más'; }
 
-  const detail = document.getElementById('res-detail');
-  detail.innerHTML = '';
+  const detail = document.getElementById('res-detail'); detail.innerHTML = '';
   questions.forEach((q, i) => {
     const ok = answers[i] === q.correct;
-    const row = document.createElement('div');
-    row.className = 'res-row';
+    const row = document.createElement('div'); row.className = 'res-row';
     row.innerHTML = `<span style="flex:1">${i + 1}. ${q.text.length > 65 ? q.text.substring(0, 65) + '…' : q.text}</span><span style="font-size:16px;flex-shrink:0">${ok ? '✅' : '❌'}</span>`;
     detail.appendChild(row);
   });
   showScreen('s-result');
 }
 
-function showAdminLogin() {
-  showScreen('s-login');
-  document.getElementById('admin-pw').value = '';
-  document.getElementById('pw-err').style.display = 'none';
+// ===== FUNCIÓN DE IMPRESIÓN =====
+function printConstancia() {
+  if (!lastResult) return;
+  const r = lastResult;
+  document.getElementById('p-name').textContent = r.name;
+  document.getElementById('p-name-firma').textContent = r.name;
+  document.getElementById('p-date').textContent = r.date;
+  document.getElementById('p-score').textContent = r.score;
+  document.getElementById('p-pct').textContent = r.pct + '%';
+  document.getElementById('p-correct').textContent = r.correct + '/' + r.total;
+  document.getElementById('p-status').textContent = r.status;
+  const statusColor = r.pct >= 80 ? '#166534' : r.pct >= 60 ? '#92400e' : '#dc2626';
+  document.getElementById('p-status-badge').textContent = r.status;
+  document.getElementById('p-status-badge').style.color = statusColor;
+
+  const detail = document.getElementById('p-detail'); detail.innerHTML = '';
+  questions.forEach((q, i) => {
+    const ok = r.answers[i] === q.correct;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid #ede5f5;font-size:12px;gap:8px';
+    row.innerHTML = `<span style="flex:1;color:#1a1a1a">${i + 1}. ${q.text}</span><span style="font-weight:700;color:${ok ? '#166534' : '#dc2626'};flex-shrink:0">${ok ? '✓ Correcta' : '✗ Incorrecta'}</span>`;
+    detail.appendChild(row);
+  });
+
+  document.getElementById('constancia-print').style.display = 'block';
+  setTimeout(() => { window.print(); document.getElementById('constancia-print').style.display = 'none'; }, 300);
 }
+window.printConstancia = printConstancia;
+
+function showAdminLogin() { showScreen('s-login'); document.getElementById('admin-pw').value = ''; document.getElementById('pw-err').style.display = 'none'; }
 window.showAdminLogin = showAdminLogin;
 
 function checkAdmin() {
-  if (document.getElementById('admin-pw').value === ADMIN_PW) {
-    document.getElementById('pw-err').style.display = 'none';
-    switchTab('notas', document.getElementById('tab-n'));
-    showScreen('s-admin');
-  } else {
-    document.getElementById('pw-err').style.display = 'block';
-  }
+  if (document.getElementById('admin-pw').value === ADMIN_PW) { document.getElementById('pw-err').style.display = 'none'; switchTab('notas', document.getElementById('tab-n')); showScreen('s-admin'); }
+  else { document.getElementById('pw-err').style.display = 'block'; }
 }
 window.checkAdmin = checkAdmin;
 
 function switchTab(name, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active');
   document.getElementById('pane-notas').style.display = name === 'notas' ? 'block' : 'none';
   document.getElementById('pane-preguntas').style.display = name === 'preguntas' ? 'block' : 'none';
-  if (name === 'notas') renderNotas();
-  else renderQList();
+  if (name === 'notas') renderNotas(); else renderQList();
 }
 window.switchTab = switchTab;
 
 async function renderNotas() {
-  const tbl = document.getElementById('notas-tbl');
-  const stats = document.getElementById('stats-box');
+  const tbl = document.getElementById('notas-tbl'), stats = document.getElementById('stats-box');
   tbl.innerHTML = '<div class="loader"><div class="spinner"></div><br>Cargando notas desde Firebase...</div>';
-  try {
-    const snap = await getDocs(collection(db, 'results'));
-    results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    results.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-  } catch (e) { results = []; }
-
-  if (!results.length) {
-    stats.innerHTML = '';
-    tbl.innerHTML = '<div style="padding:2rem;text-align:center;font-size:14px;color:#6b6b6b">🌮 Aún no hay evaluaciones registradas.</div>';
-    return;
-  }
+  let results = [];
+  try { const snap = await getDocs(collection(db, 'results')); results = snap.docs.map(d => ({ id: d.id, ...d.data() })); results.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); } catch (e) {}
+  if (!results.length) { stats.innerHTML = ''; tbl.innerHTML = '<div style="padding:2rem;text-align:center;font-size:14px;color:#6b6b6b">🌮 Aún no hay evaluaciones registradas.</div>'; return; }
   const avg = Math.round(results.reduce((a, r) => a + r.score, 0) / results.length);
   const ap = results.filter(r => r.pct >= 60).length;
-  stats.innerHTML = `<div class="met-grid" style="margin-bottom:.875rem">
-    <div class="met"><div class="met-v">${results.length}</div><div class="met-l">Evaluados</div></div>
-    <div class="met"><div class="met-v">${avg}/100</div><div class="met-l">Promedio</div></div>
-    <div class="met"><div class="met-v">${ap}/${results.length}</div><div class="met-l">Aprobados</div></div>
-  </div>`;
-  const rows = results.map((r, i) => {
-    const col = r.pct >= 80 ? '#166534' : r.pct >= 60 ? '#92400e' : '#dc2626';
-    return `<tr><td>${i + 1}</td><td style="font-weight:600">${r.name}</td><td style="font-weight:700;color:${col}">${r.score}/100</td><td>${r.pct}%</td><td>${r.correct}/${r.total}</td><td style="color:#6b6b6b">${r.date || '—'}</td></tr>`;
-  }).join('');
+  stats.innerHTML = `<div class="met-grid" style="margin-bottom:.875rem"><div class="met"><div class="met-v">${results.length}</div><div class="met-l">Evaluados</div></div><div class="met"><div class="met-v">${avg}/100</div><div class="met-l">Promedio</div></div><div class="met"><div class="met-v">${ap}/${results.length}</div><div class="met-l">Aprobados</div></div></div>`;
+  const rows = results.map((r, i) => { const col = r.pct >= 80 ? '#166534' : r.pct >= 60 ? '#92400e' : '#dc2626'; return `<tr><td>${i + 1}</td><td style="font-weight:600">${r.name}</td><td style="font-weight:700;color:${col}">${r.score}/100</td><td>${r.pct}%</td><td>${r.correct}/${r.total}</td><td style="color:#6b6b6b">${r.date || '—'}</td></tr>`; }).join('');
   tbl.innerHTML = `<table class="admin-tbl"><thead><tr><th>#</th><th>Nombre</th><th>Nota</th><th>%</th><th>Correctas</th><th>Fecha</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 async function clearResults() {
   if (!confirm('¿Eliminar TODAS las notas? Esta acción no se puede deshacer.')) return;
-  try {
-    const snap = await getDocs(collection(db, 'results'));
-    const batch = writeBatch(db);
-    snap.docs.forEach(d => batch.delete(doc(db, 'results', d.id)));
-    await batch.commit();
-    results = [];
-    renderNotas();
-  } catch (e) { alert('Error al limpiar notas.'); }
+  try { const snap = await getDocs(collection(db, 'results')); const batch = writeBatch(db); snap.docs.forEach(d => batch.delete(doc(db, 'results', d.id))); await batch.commit(); renderNotas(); } catch (e) { alert('Error al limpiar notas.'); }
 }
 window.clearResults = clearResults;
 
 function renderQList() {
-  const el = document.getElementById('q-list');
-  el.innerHTML = '';
+  const el = document.getElementById('q-list'); el.innerHTML = '';
   const total = questions.reduce((a, q) => a + q.pts, 0);
   el.innerHTML = `<div style="font-size:12px;color:#6b6b6b;margin-bottom:10px">Total: <strong style="color:var(--p)">${total} pts</strong> en ${questions.length} preguntas</div>`;
   questions.forEach((q, i) => {
-    const d = document.createElement('div');
-    d.className = 'qec';
-    d.innerHTML = `<div class="qeh">
-      <span class="qet"><strong>${i + 1}.</strong> ${q.text}</span>
-      <div style="display:flex;gap:4px;flex-shrink:0">
-        <button class="ib" onclick="editQuestion('${q.id}',${i})" title="Editar">✏️</button>
-        <button class="ib" onclick="deleteQuestion('${q.id}')" title="Eliminar">🗑️</button>
-      </div>
-    </div>
-    <div style="margin-top:5px;font-size:12px;color:var(--pl)"><strong>${q.pts} pts</strong> · Correcta: ${q.opts[q.correct]}</div>`;
+    const d = document.createElement('div'); d.className = 'qec';
+    d.innerHTML = `<div class="qeh"><span class="qet"><strong>${i + 1}.</strong> ${q.text}</span><div style="display:flex;gap:4px;flex-shrink:0"><button class="ib" onclick="editQuestion('${q.id}',${i})">✏️</button><button class="ib" onclick="deleteQuestion('${q.id}')">🗑️</button></div></div><div style="margin-top:5px;font-size:12px;color:var(--pl)"><strong>${q.pts} pts</strong> · Correcta: ${q.opts[q.correct]}</div>`;
     el.appendChild(d);
   });
 }
@@ -473,25 +530,17 @@ async function editQuestion(id, i) {
   const b = prompt('Opción B:', q.opts[1]); if (!b) return;
   const c = prompt('Opción C:', q.opts[2]); if (!c) return;
   const d = prompt('Opción D:', q.opts[3]); if (!d) return;
-  const correct = parseInt(prompt('Correcta (0=A, 1=B, 2=C, 3=D):', q.correct));
+  const correct = parseInt(prompt('Correcta (0=A,1=B,2=C,3=D):', q.correct));
   if (isNaN(correct) || correct < 0 || correct > 3) { alert('Número inválido.'); return; }
   const pts = parseInt(prompt('Puntos:', q.pts));
   if (isNaN(pts) || pts < 1) { alert('Puntos inválidos.'); return; }
-  try {
-    await setDoc(doc(db, 'questions', id), { text, opts: [a, b, c, d], correct, pts, order: q.order !== undefined ? q.order : i });
-    showSaveMsg('✅ Pregunta actualizada en Firebase. Todos verán el cambio al instante.');
-    await reloadQuestions();
-  } catch (e) { alert('Error al guardar: ' + e.message); }
+  try { await setDoc(doc(db, 'questions', id), { text, opts: [a, b, c, d], correct, pts, order: q.order !== undefined ? q.order : i }); showSaveMsg('✅ Pregunta actualizada. Todos verán el cambio al instante.'); await reloadQuestions(); } catch (e) { alert('Error: ' + e.message); }
 }
 window.editQuestion = editQuestion;
 
 async function deleteQuestion(id) {
-  if (!confirm('¿Eliminar esta pregunta de Firebase?')) return;
-  try {
-    await deleteDoc(doc(db, 'questions', id));
-    showSaveMsg('🗑️ Pregunta eliminada correctamente.');
-    await reloadQuestions();
-  } catch (e) { alert('Error al eliminar: ' + e.message); }
+  if (!confirm('¿Eliminar esta pregunta?')) return;
+  try { await deleteDoc(doc(db, 'questions', id)); showSaveMsg('🗑️ Pregunta eliminada.'); await reloadQuestions(); } catch (e) { alert('Error: ' + e.message); }
 }
 window.deleteQuestion = deleteQuestion;
 
@@ -501,15 +550,11 @@ async function addQuestion() {
   const b = prompt('Opción B:'); if (!b) return;
   const c = prompt('Opción C:'); if (!c) return;
   const d = prompt('Opción D:'); if (!d) return;
-  const correct = parseInt(prompt('Correcta (0=A, 1=B, 2=C, 3=D):'));
+  const correct = parseInt(prompt('Correcta (0=A,1=B,2=C,3=D):'));
   if (isNaN(correct) || correct < 0 || correct > 3) { alert('Número inválido.'); return; }
   const pts = parseInt(prompt('Puntos:'));
   if (isNaN(pts) || pts < 1) { alert('Puntos inválidos.'); return; }
-  try {
-    await addDoc(collection(db, 'questions'), { text, opts: [a, b, c, d], correct, pts, order: questions.length });
-    showSaveMsg('✅ Pregunta agregada. Todos la verán al instante.');
-    await reloadQuestions();
-  } catch (e) { alert('Error al agregar: ' + e.message); }
+  try { await addDoc(collection(db, 'questions'), { text, opts: [a, b, c, d], correct, pts, order: questions.length }); showSaveMsg('✅ Pregunta agregada.'); await reloadQuestions(); } catch (e) { alert('Error: ' + e.message); }
 }
 window.addQuestion = addQuestion;
 
@@ -521,14 +566,10 @@ async function reloadQuestions() {
 }
 
 function showSaveMsg(msg) {
-  const el = document.getElementById('save-msg');
-  el.className = 'alrt alrt-s';
-  el.textContent = msg;
-  el.style.display = 'block';
+  const el = document.getElementById('save-msg'); el.className = 'alrt alrt-s'; el.textContent = msg; el.style.display = 'block';
   setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
 
-// Inicializar — carga preguntas SOLO desde Firebase
 loadQuestions();
 </script>
 </body>
